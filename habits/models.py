@@ -1,17 +1,26 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.conf import settings
 
 
 class Habit(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='habits')
+    """
+    Создание модели привычек
+    """
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="habits"
+    )
     place = models.CharField(max_length=100)
     time = models.TimeField()
     action = models.CharField(max_length=50)
     is_pleasant = models.BooleanField(default=False)
     related_habit = models.ForeignKey(
-        'self', null=True, blank=True, on_delete=models.SET_NULL,
-        limit_choices_to={'is_pleasant': True}, related_name='linked_habits'
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        limit_choices_to={"is_pleasant": True},
+        related_name="linked_habits",
     )
     reward = models.CharField(max_length=255, blank=True, null=True)
     period = models.PositiveIntegerField(default=1)
@@ -19,9 +28,13 @@ class Habit(models.Model):
     is_public = models.BooleanField(default=False)
 
     def clean(self):
-        # Проверка: нельзя одновременно указать `reward` и `related_habit`
+        """
+        Проверка: нельзя одновременно указать `reward` и `related_habit`
+        """
         if self.reward and self.related_habit:
-            raise ValidationError("Cannot set both 'reward' and 'related_habit'. Choose only one.")
+            raise ValidationError(
+                "Cannot set both 'reward' and 'related_habit'. Choose only one."
+            )
 
         # Проверка: `time_to_complete` не должен превышать 120 секунд
         if self.time_to_complete > 120:
@@ -37,7 +50,9 @@ class Habit(models.Model):
 
         # Проверка: у приятной привычки не может быть `reward` или `related_habit`
         if self.is_pleasant and (self.reward or self.related_habit):
-            raise ValidationError("Pleasant habits cannot have 'reward' or 'related_habit'.")
+            raise ValidationError(
+                "Pleasant habits cannot have 'reward' or 'related_habit'."
+            )
 
     def save(self, *args, **kwargs):
         self.clean()  # Вызываем метод clean перед сохранением

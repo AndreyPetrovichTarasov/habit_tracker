@@ -44,6 +44,7 @@ class User(AbstractUser):
         max_length=15, blank=True, null=True, verbose_name="Номер телефона"
     )
     city = models.CharField(max_length=50, blank=True, null=True, verbose_name="Город")
+    telegram_chat_id = models.CharField(max_length=50, blank=True, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
