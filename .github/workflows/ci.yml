@@ -27,13 +27,13 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     env: # Передаем переменные во все джобы
-      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       DEBUG: ${{ secrets.DEBUG }}
-      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-      DATABASE_USER: ${{ secrets.DATABASE_USER }}
-      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-      DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
-      DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+      NAME: ${{ secrets.DATABASE_NAME }}
+      USER: ${{ secrets.DATABASE_USER }}
+      PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      HOST: ${{ secrets.DATABASE_HOST }}
+      PORT: ${{ secrets.DATABASE_PORT }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       REDIS_HOST: ${{ secrets.REDIS_HOST }}
       REDIS_PORT: ${{ secrets.REDIS_PORT }}
