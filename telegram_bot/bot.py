@@ -58,7 +58,6 @@ async def start(update: Update, context):
         await update.message.reply_text("Sorry, something went wrong.")
 
 
-
 def main():
     """
     Основная функция для создания бота
