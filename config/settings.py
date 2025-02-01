@@ -155,7 +155,7 @@ REDIS_PORT = os.getenv("REDIS_PORT")
 if "test" in sys.argv:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.sqllite3",
+            "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "test_db.sqlite3",
         }
     }
