@@ -85,7 +85,7 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'EOF'
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habit_tracker:${{ github.sha }}
           docker stop habit_tracker || true
           docker rm habit_tracker || true
