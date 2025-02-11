@@ -58,7 +58,7 @@ jobs:
         run: poetry run python manage.py test
 
   copy_files_in_server:
-    needs: tests
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
