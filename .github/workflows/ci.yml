@@ -56,10 +56,10 @@ jobs:
 
       - name: Run tests
         run: poetry run python manage.py test
-  build:
-    needs: test
-    runs-on: ubuntu-latest
 
+  copy_files_in_server:
+    needs: tests
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -67,32 +67,16 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
-          echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env 
+          echo '"${{ secrets.ENV_FILE }}"' | sed "s/\"//g" > .env # Удаление кавычек в файле. P.S. их не должно быть в секретах
 
-      - name: Log in Docker hub
-        run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/habit_tracker:${{ github.sha }} .
-
-      - name: Push Docker image in Docker hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/habit_tracker:${{ github.sha }}
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-      - name: Deploy to server
+      - name: Adding Known Hosts # ...
+        run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Copy project files to server
         run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}  << 'EOF'
-          sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/habit_tracker:${{ github.sha }}
-          sudo docker stop habit_tracker || true
-          sudo docker rm habit_tracker || true
-          sudo docker run -d --name habit_tracker -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/habit_tracker:${{ github.sha }}
-          EOF
+          rsync -avz --exclude '__pycache__' --exclude '.git' --exclude '.github' . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
