@@ -93,6 +93,7 @@ jobs:
       - name: Run Server
         run: |
           ssh -o StrictHostKeyChecking=no -vT ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} < 'EOF'
+          ls -la
           cd ${{ secrets.DEPLOY_DIR }}
           sudo docker compose down
           sudo docker container rm $(docker ps -a -q)
