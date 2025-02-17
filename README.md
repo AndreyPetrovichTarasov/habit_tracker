@@ -37,19 +37,85 @@
 
 ## Установка:
 
-1. **Клонируйте репозиторий:** git clone https://github.com/AndreyPetrovichTarasov/habit_tracker.git
-2. **Перейдите в директорию проекта:** cd habit_tracker
-3. **Соберите и запустите сервисы с помощью docker-compose:** команда для запуска - 'docker-compose up --build'. Эта команда соберет все необходимые контейнеры и запустит их.
+1. **Запуск проекта локально:**
 
-После успешного запуска контейнеров, сервис будет доступен по адресу:
+Требования:
+Установленный Docker
+Установленный Docker Compose
+Python 3.10+
 
-http://localhost:8000
+Шаги для запуска:
 
-**Чтобы остановить сервисы, используйте команду:** docker-compose down
+Клонируйте репозиторий:
 
-**Чтобы просматривать логи, используйте команду:** docker-compose logs
+git clone https://github.com/AndreyPetrovichTarasov/habit_tracker.git
+cd your-repo
 
-**Настройка сервера**:
+Создайте и активируйте виртуальное окружение:
+
+python -m venv venv
+source venv/bin/activate  # для macOS и Linux
+venv\Scripts\activate  # для Windows
+
+Установите зависимости:
+pip install -r requirements.txt
+
+Настройте переменные окружения, создав файл .env на основе .env.example.
+
+Запустите базу данных и сервисы через Docker:
+
+docker-compose up -d
+
+Выполните миграции и запустите сервер:
+
+python manage.py migrate
+python manage.py runserver
+
+Откройте в браузере http://127.0.0.1:8000.
+
+2. **Запуск на удаленном сервере:** 
+
+Сервер с развернутым приложением
+Приложение доступно по адресу: https://84.201.138.150
+
+Шаги по настройке сервера
+Установите Docker и Docker Compose:
+
+sudo apt update && sudo apt install -y docker.io
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+Склонируйте репозиторий и настройте .env.
+
+Запустите проект через Docker Compose:
+docker-compose up -d --build
+
+Проверьте логи, убедитесь, что все сервисы запущены:
+docker-compose logs -f
+
+3. **СCI/CD. Автоматическое развертывание:**
+Настроен CI/CD через GitHub Actions. При пуше в develop происходит:
+
+Линтинг.
+Запуск тестов.
+Сборка Docker-образа.
+Деплой на сервер через SSH и docker-compose pull && docker-compose up -d.
+
+Настройка:
+
+Добавьте в настройки репозитория переменные окружения:
+
+SERVER_IP
+
+SSH_USER
+
+SSH_KEY
+
+Убедитесь, что на сервере есть docker и docker-compose.
+
+Добавьте SSH-ключ в ~/.ssh/authorized_keys.
+
+После каждого коммита в develop изменения автоматически развертываются.
 
 
 ## Использование:

@@ -4,6 +4,8 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
+from config.views import HomePageView
+
 schema_view = get_schema_view(
     openapi.Info(
         title="Habit Tracker API",
@@ -16,6 +18,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", HomePageView.as_view(), name="home"),
     path("habits/", include("habits.urls")),
     path("users/", include("users.urls", namespace="users")),
     path(
